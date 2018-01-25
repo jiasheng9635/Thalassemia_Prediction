@@ -125,6 +125,7 @@ $(document).ready(function () {
 
 
 <p><a href="https://jiasheng9635.shinyapps.io/thalassemiaprediction/">Click here to re-direct to R Shiny web application</a></p>
+<p>First chunk of code below is showing all the libraries required and loading the clean dataset for preparation of modeling. The structure of the dataset contain two categorical variable of gender and race group and six continuous variable of red blood cell indices.</p>
 <pre class="r"><code>library(ggplot2)
 library(Hmisc)
 library(arules)
@@ -166,8 +167,7 @@ str(thalassemiaSelected)</code></pre>
 <hr />
 <div id="pre-processing-data" class="section level2">
 <h2>Pre-processing data</h2>
-<p>Unbalanced label in the data set, SMOTE is applied to balance it out</p>
-<p>In this case, data is split to 80% train and 20% test, IDA is taken as the constant to balance other levels out</p>
+<p>The dataset is split to 7:3 ratio randomly and check on how is the ratio of label in train set. With unbalanced label in the data set, there is a bias of training with more data in normal level.</p>
 <pre class="r"><code>#separate training and test set
 train_size_R &lt;- floor(0.70 * nrow(thalassemiaSelected))
 set.seed(seed)
@@ -175,24 +175,27 @@ train_ind_R &lt;- sample(seq_len(nrow(thalassemiaSelected)), size = train_size_R
 train_tree_R &lt;- thalassemiaSelected[train_ind_R, ]
 test_tree_R &lt;- thalassemiaSelected[-train_ind_R, ]
 
-#check number of label
+#number of label in train set
 table(train_tree_R$F_Diagnosis)</code></pre>
 <pre><code>## 
 ##  ALPHA   BETA    IDA NORMAL 
 ##      7     34     65   2161</code></pre>
-<pre class="r"><code>table(test_tree_R$F_Diagnosis)</code></pre>
+<pre class="r"><code>#number of label in test set
+table(test_tree_R$F_Diagnosis)</code></pre>
 <pre><code>## 
 ##  ALPHA   BETA    IDA NORMAL 
 ##      5     15     28    924</code></pre>
-<pre class="r"><code>#check ratio of label
+<pre class="r"><code>#ratio of label in train set
 prop.table(table(train_tree_R$F_Diagnosis))</code></pre>
 <pre><code>## 
 ##       ALPHA        BETA         IDA      NORMAL 
 ## 0.003087781 0.014997794 0.028672254 0.953242170</code></pre>
-<pre class="r"><code>prop.table(table(test_tree_R$F_Diagnosis))</code></pre>
+<pre class="r"><code>#ratio of label in test set
+prop.table(table(test_tree_R$F_Diagnosis))</code></pre>
 <pre><code>## 
 ##       ALPHA        BETA         IDA      NORMAL 
 ## 0.005144033 0.015432099 0.028806584 0.950617284</code></pre>
+<p>Therefore, SMOTE is applied to balance the label, preventing bias on training. In this case, IDA (Iron Deficiency Anaemia) is taken as the optimal value to balance other levels out since it is closest to mean and median.</p>
 <pre class="r"><code>#smote*********************************************************************
 #alpha compare with other three
 smote1 &lt;- train_tree_R
@@ -230,24 +233,27 @@ train_tree_R_smote$F_Diagnosis &lt;- factor(train_tree_R_smote$F_Diagnosis)
 
 #show result of smote
 rownames(train_tree_R_smote) &lt;- NULL
+#number of label in train set after smote
 table(train_tree_R_smote$F_Diagnosis)</code></pre>
 <pre><code>## 
 ##  ALPHA   BETA    IDA NORMAL 
 ##     70     68     65     69</code></pre>
-<pre class="r"><code>prop.table(table(train_tree_R_smote$F_Diagnosis))</code></pre>
+<pre class="r"><code>#ratio of label in train set after smote
+prop.table(table(train_tree_R_smote$F_Diagnosis))</code></pre>
 <pre><code>## 
 ##     ALPHA      BETA       IDA    NORMAL 
 ## 0.2573529 0.2500000 0.2389706 0.2536765</code></pre>
 <pre class="r"><code>train_tree_R &lt;- train_tree_R_smote</code></pre>
 <hr />
 </div>
-<div id="gridsearch-result" class="section level2">
-<h2>Gridsearch result</h2>
+<div id="grid-search-result" class="section level2">
+<h2>Grid search result</h2>
+<p>Grid search is performed is each classifier to best tune the parameters for best outcome possible. It is performed with caret package with code provided below:</p>
 <div id="random-forest" class="section level3">
 <h3>Random Forest</h3>
 <ul>
-<li>rf_grid &lt;- expand.grid(mtry=c(1:9))</li>
-<li>Fitting mtry = 6 on full training set</li>
+<li>rf_grid &lt;- expand.grid(mtry=c(1:8))</li>
+<li>Fitting mtry = 7 on full training set</li>
 </ul>
 </div>
 <div id="adaboost" class="section level3">
@@ -261,13 +267,14 @@ table(train_tree_R_smote$F_Diagnosis)</code></pre>
 <h3>XGBoost</h3>
 <ul>
 <li>grid &lt;- expand.grid(nrounds = c(25, 100), max_depth = c(3, 4), eta = c(0.01, 0.001), gamma = c(0, 1), colsample_bytree = c(0.5, 0.6), min_child_weight = c(0.5, 1), subsample = c(0.5, 1) )</li>
-<li>Fitting nrounds = 100, max_depth = 4, eta = 0.01, gamma = 0, colsample_bytree = 0.6, min_child_weight = 0.5, subsample = 0.5 on full training set</li>
+<li>Fitting nrounds = 100, max_depth = 4, eta = 0.001, gamma = 0, colsample_bytree = 0.5, min_child_weight = 0.5, subsample = 1 on full training set</li>
 </ul>
 <hr />
 </div>
 </div>
 <div id="model-training" class="section level2">
 <h2>Model training</h2>
+<p>Each classifier is trained using the best tuning parameters provided by grid search. Nothing is special with random forest and adaboost, while xgboost is a special case that only received data in DMatrix format, therefore conversion is required as well as adjusting label with factor initially start with 1 to 0. As softmax is only providing the final result, softprob is providing the probability of selecting the final result, both are needed for ensemble method.</p>
 <pre class="r"><code>#Random Forest for RCI*******************************************************
 #Train model
 set.seed(seed)
