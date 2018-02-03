@@ -558,9 +558,9 @@ chooseBestModel &lt;- function(x) {
 testSet$pred_majority &lt;- as.factor(label_class[as.numeric(apply(numeric_pred, 1, chooseBestModel))])
 
 #Taking weighted average of predictions===================================================
-ratio_rf &lt;- 0.5
-ratio_ab &lt;- 0.3
-ratio_xg &lt;- 0.2
+ratio_rf &lt;- 0.2
+ratio_ab &lt;- 0.5
+ratio_xg &lt;- 0.3
 
 testSet$pred_weighted_avg.ALPHA &lt;- (testSet$pred_rf_prob$ALPHA*ratio_rf) + (testSet$pred_ab_prob$ALPHA*ratio_ab) + (testSet$pred_xg_prob$ALPHA*ratio_xg)
 testSet$pred_weighted_avg.BETA &lt;- (testSet$pred_rf_prob$BETA*ratio_rf) + (testSet$pred_ab_prob$BETA*ratio_ab) + (testSet$pred_xg_prob$BETA*ratio_xg)
@@ -762,43 +762,43 @@ testSet$pred_weighted_avg &lt;- as.factor(gsub(&quot;pred_weighted_avg.&quot;, &
 <h3>Weighted Averaging</h3>
 <p>Weighted Ratio:</p>
 <ul>
-<li>Random Forest = 0.5</li>
-<li>Adaboost = 0.3</li>
-<li>XGBoost Forest = 0.2</li>
+<li>Random Forest = 0.2</li>
+<li>Adaboost = 0.5</li>
+<li>XGBoost Forest = 0.3</li>
 </ul>
 <pre><code>## Confusion Matrix and Statistics
 ## 
 ##           Reference
 ## Prediction ALPHA BETA IDA NORMAL
-##     ALPHA      1    0   0      3
-##     BETA       4   14   1     71
-##     IDA        0    0  26     62
-##     NORMAL     0    1   1    788
+##     ALPHA      1    0   0      2
+##     BETA       4   14   1     68
+##     IDA        0    1  27     62
+##     NORMAL     0    0   0    792
 ## 
 ## Overall Statistics
-##                                          
-##                Accuracy : 0.8529         
-##                  95% CI : (0.829, 0.8746)
-##     No Information Rate : 0.9506         
-##     P-Value [Acc &gt; NIR] : 1              
-##                                          
-##                   Kappa : 0.3412         
-##  Mcnemar's Test P-Value : NA             
+##                                           
+##                Accuracy : 0.858           
+##                  95% CI : (0.8345, 0.8794)
+##     No Information Rate : 0.9506          
+##     P-Value [Acc &gt; NIR] : 1               
+##                                           
+##                   Kappa : 0.3586          
+##  Mcnemar's Test P-Value : NA              
 ## 
 ## Statistics by Class:
 ## 
 ##                      Class: ALPHA Class: BETA Class: IDA Class: NORMAL
-## Sensitivity              0.200000     0.93333    0.92857        0.8528
-## Specificity              0.996898     0.92059    0.93432        0.9583
-## Pos Pred Value           0.250000     0.15556    0.29545        0.9975
-## Neg Pred Value           0.995868     0.99887    0.99774        0.2527
-## Precision                0.250000     0.15556    0.29545        0.9975
-## Recall                   0.200000     0.93333    0.92857        0.8528
-## F1                       0.222222     0.26667    0.44828        0.9195
+## Sensitivity              0.200000     0.93333    0.96429        0.8571
+## Specificity              0.997932     0.92372    0.93326        1.0000
+## Pos Pred Value           0.333333     0.16092    0.30000        1.0000
+## Neg Pred Value           0.995872     0.99887    0.99887        0.2667
+## Precision                0.333333     0.16092    0.30000        1.0000
+## Recall                   0.200000     0.93333    0.96429        0.8571
+## F1                       0.250000     0.27451    0.45763        0.9231
 ## Prevalence               0.005144     0.01543    0.02881        0.9506
-## Detection Rate           0.001029     0.01440    0.02675        0.8107
-## Detection Prevalence     0.004115     0.09259    0.09053        0.8128
-## Balanced Accuracy        0.598449     0.92696    0.93145        0.9056</code></pre>
+## Detection Rate           0.001029     0.01440    0.02778        0.8148
+## Detection Prevalence     0.003086     0.08951    0.09259        0.8148
+## Balanced Accuracy        0.598966     0.92853    0.94877        0.9286</code></pre>
 </div>
 <div id="test-set" class="section level3">
 <h3>Test Set</h3>
@@ -3225,7 +3225,7 @@ testSet$pred_weighted_avg &lt;- as.factor(gsub(&quot;pred_weighted_avg.&quot;, &
 <td align="left">IDA</td>
 <td align="left">IDA</td>
 <td align="left">NORMAL</td>
-<td align="left">NORMAL</td>
+<td align="left">IDA</td>
 </tr>
 <tr class="even">
 <td>797</td>
@@ -3735,7 +3735,7 @@ testSet$pred_weighted_avg &lt;- as.factor(gsub(&quot;pred_weighted_avg.&quot;, &
 <td align="left">NORMAL</td>
 <td align="left">NORMAL</td>
 <td align="left">NORMAL</td>
-<td align="left">BETA</td>
+<td align="left">NORMAL</td>
 </tr>
 <tr class="odd">
 <td>971</td>
@@ -4675,7 +4675,7 @@ testSet$pred_weighted_avg &lt;- as.factor(gsub(&quot;pred_weighted_avg.&quot;, &
 <td align="left">NORMAL</td>
 <td align="left">NORMAL</td>
 <td align="left">NORMAL</td>
-<td align="left">BETA</td>
+<td align="left">NORMAL</td>
 </tr>
 <tr class="odd">
 <td>1310</td>
@@ -4885,7 +4885,7 @@ testSet$pred_weighted_avg &lt;- as.factor(gsub(&quot;pred_weighted_avg.&quot;, &
 <td align="left">NORMAL</td>
 <td align="left">NORMAL</td>
 <td align="left">NORMAL</td>
-<td align="left">IDA</td>
+<td align="left">NORMAL</td>
 </tr>
 <tr class="even">
 <td>1366</td>
@@ -5615,7 +5615,7 @@ testSet$pred_weighted_avg &lt;- as.factor(gsub(&quot;pred_weighted_avg.&quot;, &
 <td align="left">NORMAL</td>
 <td align="left">NORMAL</td>
 <td align="left">BETA</td>
-<td align="left">BETA</td>
+<td align="left">NORMAL</td>
 </tr>
 <tr class="odd">
 <td>1647</td>
@@ -5915,7 +5915,7 @@ testSet$pred_weighted_avg &lt;- as.factor(gsub(&quot;pred_weighted_avg.&quot;, &
 <td align="left">NORMAL</td>
 <td align="left">NORMAL</td>
 <td align="left">NORMAL</td>
-<td align="left">BETA</td>
+<td align="left">NORMAL</td>
 </tr>
 <tr class="odd">
 <td>1745</td>
@@ -6615,7 +6615,7 @@ testSet$pred_weighted_avg &lt;- as.factor(gsub(&quot;pred_weighted_avg.&quot;, &
 <td align="left">IDA</td>
 <td align="left">IDA</td>
 <td align="left">IDA</td>
-<td align="left">NORMAL</td>
+<td align="left">IDA</td>
 </tr>
 <tr class="odd">
 <td>1955</td>
@@ -7055,7 +7055,7 @@ testSet$pred_weighted_avg &lt;- as.factor(gsub(&quot;pred_weighted_avg.&quot;, &
 <td align="left">BETA</td>
 <td align="left">BETA</td>
 <td align="left">BETA</td>
-<td align="left">ALPHA</td>
+<td align="left">BETA</td>
 </tr>
 <tr class="odd">
 <td>2096</td>
@@ -7095,7 +7095,7 @@ testSet$pred_weighted_avg &lt;- as.factor(gsub(&quot;pred_weighted_avg.&quot;, &
 <td align="left">NORMAL</td>
 <td align="left">NORMAL</td>
 <td align="left">BETA</td>
-<td align="left">BETA</td>
+<td align="left">IDA</td>
 </tr>
 <tr class="odd">
 <td>2105</td>
@@ -8745,7 +8745,7 @@ testSet$pred_weighted_avg &lt;- as.factor(gsub(&quot;pred_weighted_avg.&quot;, &
 <td align="left">BETA</td>
 <td align="left">BETA</td>
 <td align="left">NORMAL</td>
-<td align="left">NORMAL</td>
+<td align="left">BETA</td>
 </tr>
 <tr class="even">
 <td>2666</td>
@@ -9275,7 +9275,7 @@ testSet$pred_weighted_avg &lt;- as.factor(gsub(&quot;pred_weighted_avg.&quot;, &
 <td align="left">IDA</td>
 <td align="left">IDA</td>
 <td align="left">IDA</td>
-<td align="left">NORMAL</td>
+<td align="left">IDA</td>
 </tr>
 <tr class="odd">
 <td>2857</td>
@@ -9825,7 +9825,7 @@ testSet$pred_weighted_avg &lt;- as.factor(gsub(&quot;pred_weighted_avg.&quot;, &
 <td align="left">IDA</td>
 <td align="left">IDA</td>
 <td align="left">NORMAL</td>
-<td align="left">NORMAL</td>
+<td align="left">IDA</td>
 </tr>
 <tr class="even">
 <td>3041</td>
@@ -10015,7 +10015,7 @@ testSet$pred_weighted_avg &lt;- as.factor(gsub(&quot;pred_weighted_avg.&quot;, &
 <td align="left">NORMAL</td>
 <td align="left">NORMAL</td>
 <td align="left">IDA</td>
-<td align="left">IDA</td>
+<td align="left">NORMAL</td>
 </tr>
 <tr class="odd">
 <td>3099</td>
@@ -10045,7 +10045,7 @@ testSet$pred_weighted_avg &lt;- as.factor(gsub(&quot;pred_weighted_avg.&quot;, &
 <td align="left">BETA</td>
 <td align="left">NORMAL</td>
 <td align="left">BETA</td>
-<td align="left">BETA</td>
+<td align="left">NORMAL</td>
 </tr>
 <tr class="even">
 <td>3104</td>
@@ -10385,7 +10385,7 @@ testSet$pred_weighted_avg &lt;- as.factor(gsub(&quot;pred_weighted_avg.&quot;, &
 <td align="left">BETA</td>
 <td align="left">BETA</td>
 <td align="left">BETA</td>
-<td align="left">IDA</td>
+<td align="left">BETA</td>
 </tr>
 <tr class="even">
 <td>3196</td>
